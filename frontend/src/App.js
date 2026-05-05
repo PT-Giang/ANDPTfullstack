@@ -1,20 +1,65 @@
-import { useEffect } from "react";
-import "./App.css";
+import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
 import keycloak from "./keycloak";
+import { hasRole } from "./services/auth";
+
+import LoginPage from "./pages/login/login";
+import UserHome from "./pages/userHome/userHome";
+import AdminHome from "./pages/adminHome/adminHome";
 
 function App() {
+  const [authenticated, setAuthenticated] = useState(false);
+  const [ready, setReady] = useState(false);
+
   useEffect(() => {
-    keycloak.init({ onLoad: "login-required" }).then((authenticated) => {
-      console.log("Authenticated:", authenticated);
-      console.log("Token:", keycloak.token);
-    });
+    if (!window._keycloakInitialized) {
+      keycloak.init({ onLoad: "check-sso" }).then((auth) => {
+        // auth là kết quả xác thực
+        window._keycloakInitialized = true;
+        setAuthenticated(auth); // Cập nhật trạng thái tại đây
+        setReady(true);
+      });
+    } else {
+      setAuthenticated(keycloak.authenticated);
+      setReady(true);
+    }
   }, []);
 
+  if (!ready) return <div>Loading...</div>;
+
   return (
-    <div>
-      <h1>React + Keycloak Login</h1>
-      <button onClick={() => keycloak.logout()}>Logout</button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* LOGIN */}
+        <Route
+          path="/login"
+          element={!authenticated ? <LoginPage /> : <Navigate to="/" />}
+        />
+
+        {/* USER */}
+        <Route
+          path="/"
+          element={authenticated ? <UserHome /> : <Navigate to="/login" />}
+        />
+
+        {/* ADMIN */}
+        <Route
+          path="/admin"
+          element={
+            authenticated ? (
+              hasRole("admin") ? (
+                <AdminHome />
+              ) : (
+                <Navigate to="/" />
+              )
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
