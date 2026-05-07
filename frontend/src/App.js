@@ -34,7 +34,17 @@ function App() {
         {/* LOGIN */}
         <Route
           path="/login"
-          element={!authenticated ? <LoginPage /> : <Navigate to="/" />}
+          element={
+            authenticated ? (
+              hasRole("admin") ? (
+                <Navigate to="/admin" />
+              ) : (
+                <Navigate to="/" />
+              )
+            ) : (
+              <LoginPage />
+            )
+          }
         />
 
         {/* USER */}
