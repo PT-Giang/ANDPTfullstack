@@ -14,5 +14,9 @@ api.interceptors.request.use((config) => {
 
   return config;
 });
+export const getKeycloakUsers = async () => {
+  const response = await api.get("/api/admin/users");
+  return response.data;
+};
 
 export default api;

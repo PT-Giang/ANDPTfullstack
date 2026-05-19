@@ -4,9 +4,11 @@ const router = express.Router();
 const verifyToken = require("../middlewares/auth");
 const { getPrivate, getPublic } = require("../controller/apiController");
 const checkRole = require("../middlewares/role");
+const { getKeycloakUsers } = require("../controller/adminController");
 
 // public
 router.get("/public", getPublic);
+router.get("/admin/users", verifyToken, checkRole("admin"), getKeycloakUsers);
 
 // protected
 router.get("/", verifyToken, getPrivate);

@@ -34,17 +34,7 @@ function App() {
         {/* LOGIN */}
         <Route
           path="/login"
-          element={
-            authenticated ? (
-              hasRole("admin") ? (
-                <Navigate to="/admin" />
-              ) : (
-                <Navigate to="/" />
-              )
-            ) : (
-              <LoginPage />
-            )
-          }
+          element={authenticated ? <Navigate to="/" /> : <LoginPage />}
         />
 
         {/* USER */}
@@ -53,7 +43,6 @@ function App() {
           element={authenticated ? <UserHome /> : <Navigate to="/login" />}
         />
 
-        {/* ADMIN */}
         <Route
           path="/admin"
           element={
