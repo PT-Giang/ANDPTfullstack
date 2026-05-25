@@ -18,7 +18,11 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.5.7
     container_name: keycloak-server
-    command: start-dev
+    command:
+      - start-dev
+      - --hostname=172.20.10.5
+      - --hostname-strict=false
+
     restart: always
     environment:
       KEYCLOAK_ADMIN: admin

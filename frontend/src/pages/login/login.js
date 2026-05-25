@@ -2,7 +2,7 @@ import keycloak from "../../keycloak";
 
 function LoginPage() {
   const handleLogin = () => {
-    keycloak.login();
+    keycloak.login({ redirectUri: "https://172.20.10.5:3000/" });
   };
 
   return (

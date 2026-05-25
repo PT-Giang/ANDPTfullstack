@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import api from "../../services/api";
 import { getUser, getRoles, logout, hasRole } from "../../services/auth";
 import { useNavigate } from "react-router-dom";
+import { getToken } from "../../services/auth";
 
 function UserHome() {
   const [data, setData] = useState(null);
   const navigate = useNavigate();
+  const token = getToken();
 
   const handleManage = () => {
     if (hasRole("admin")) {
@@ -25,16 +27,13 @@ function UserHome() {
   return (
     <div>
       <h1>User Home</h1>
-
       <p>
         <b>User:</b> {getUser()}
       </p>
       <p>
         <b>Roles:</b> {getRoles().join(", ")}
       </p>
-
       {!data && <p>Loading...</p>}
-
       {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
       <button
         onClick={handleManage}

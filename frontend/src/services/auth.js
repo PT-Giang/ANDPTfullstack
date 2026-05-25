@@ -1,7 +1,7 @@
 import keycloak from "../keycloak";
 export const logout = () => {
   keycloak.logout({
-    redirectUri: window.location.origin + "/login",
+    redirectUri: "https://172.20.10.5:3000/login",
   });
 };
 

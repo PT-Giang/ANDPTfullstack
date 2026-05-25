@@ -13,17 +13,22 @@ function App() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (!window._keycloakInitialized) {
-      keycloak.init({ onLoad: "check-sso" }).then((auth) => {
-        // auth là kết quả xác thực
-        window._keycloakInitialized = true;
-        setAuthenticated(auth); // Cập nhật trạng thái tại đây
+    keycloak
+      .init({
+        checkLoginIframe: false,
+        pkceMethod: false,
+      })
+      .then((auth) => {
+        console.log("AUTH:", auth);
+
+        setAuthenticated(auth);
+        setReady(true);
+      })
+      .catch((err) => {
+        console.error("KEYCLOAK INIT ERROR:", err);
+
         setReady(true);
       });
-    } else {
-      setAuthenticated(keycloak.authenticated);
-      setReady(true);
-    }
   }, []);
 
   if (!ready) return <div>Loading...</div>;
